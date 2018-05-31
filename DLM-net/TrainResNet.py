@@ -27,7 +27,7 @@ image_name_path = "./label/name_1200.npy"
 # parentPath = "F:\\CACD2000_Crop\\"
 parentPath = './data'
 # data Path: n * 224 * 224 * 3 numpy matrix
-data_path = 'F:\\Dataset\\1200_data.npy'
+data_path = './data1200_data.npy'
 
 
 
@@ -83,8 +83,8 @@ def Train():
             labels = tf.placeholder(tf.float32, shape = [None, LABELSNUM])
 
         # build resnet model
-        resnet_model = resnet.ResNet(ResNet_npy_path = model_path)
-        resnet_model.build(images, LABELSNUM, final_layer_type)
+        resnet_model = resnet.ResNet()
+        resnet_model.build(images, LABELSNUM)
         # number of batches per epoch
         num_minibatches = int(num_train_image / MINI_BATCH_SIZE)
 
