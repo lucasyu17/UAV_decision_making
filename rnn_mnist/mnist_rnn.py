@@ -2,6 +2,8 @@
 
 import tensorflow as tf
 import numpy as np
+from UAV import UAV
+# import pcl
 
 TIME_STEP = 32                                              #每一个图片的分层：32层
 img_width = 64
@@ -9,7 +11,7 @@ INPUT_SIZE = img_width*img_width                            #每一层的一张�
 LR = 0.01                                                   #学习率
 NUM_UNITS = 128                                             #多少个lstm学习单元
 ITERATIONS = 100                                             #迭代次数
-N_CLASSES = 4                                               #输出的维度
+N_CLASSES = 6                                               #输出的维度
 batch_step = 20                                             #一个batch包含多少张图片
 total_imgNum = 1000                                         #数据中总共有多少张图片
 
@@ -21,6 +23,11 @@ biases = {
     'in':tf.Variable(tf.constant(0.1,shape=[NUM_UNITS,]),name='b_in'),
     'out':tf.Variable(tf.constant(0.1,shape=[N_CLASSES,]),name='b_out')
 }
+
+uav = UAV()
+uav.read_pcd()
+uav.get_global_pos()
+uav.printCurPos()
 
 saver = tf.train.Saver(max_to_keep=4)
 
@@ -52,7 +59,6 @@ train_y = tf.placeholder(tf.int32, [None, N_CLASSES])
 #test data container
 test_x = tf.placeholder(tf.float32,shape=[],name = 'test_x')
 test_y = tf.placeholder(tf.float32,shape=[],name = 'test_y')
-
 
 def fake_data():
     fake_img = np.random.randint(1,size=(total_imgNum*TIME_STEP,img_width*img_width))
@@ -108,6 +114,7 @@ fakex,fakey = fake_data()
 print(np.sum(fakey))
 
 rnn_data = RNN_DATA(fakex,fakey)
+
 
 pred = RNN(train_x,weights,biases)
 loss = tf.losses.softmax_cross_entropy(onehot_labels=train_y, logits=pred)              # 计算loss
